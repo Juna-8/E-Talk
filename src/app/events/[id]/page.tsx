@@ -13,7 +13,7 @@ const CATEGORY_COLOR: Record<string, string> = {
 }
 
 const STATUS_LABEL: Record<string, string> = {
-  upcoming: '예정', ongoing: '진행 중', ended: '종료',
+  draft: '검수 중', upcoming: '예정', ongoing: '진행 중', ended: '종료',
 }
 
 interface Props { params: Promise<{ id: string }> }
@@ -72,8 +72,12 @@ export default async function EventDetailPage({ params }: Props) {
 
         {/* 기본 정보 */}
         <ul className="detail-metas">
-          <li>📅 {event.date} {event.start_time}{event.end_time ? ` ~ ${event.end_time}` : ''}</li>
-          <li>📍 {event.location}</li>
+          <li>
+            📅 {event.date ?? '날짜 미정'}
+            {event.start_time ? ` ${event.start_time}` : ''}
+            {event.end_time ? ` ~ ${event.end_time}` : ''}
+          </li>
+          <li>📍 {event.location ?? '장소 미정'}</li>
           <li>🏢 {event.host}</li>
           {event.target && <li>👥 {event.target}</li>}
         </ul>

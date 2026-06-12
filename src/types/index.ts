@@ -10,7 +10,7 @@ export type EventCategory =
   | '콜로퀴움'
   | '기타'
 
-export type EventStatus = 'upcoming' | 'ongoing' | 'ended'
+export type EventStatus = 'draft' | 'upcoming' | 'ongoing' | 'ended'
 
 export interface Profile {
   id: string
@@ -19,6 +19,7 @@ export interface Profile {
   major?: string
   grade?: number
   interests: string[]
+  is_admin: boolean
   created_at: string
 }
 
@@ -27,18 +28,22 @@ export interface Event {
   title: string
   category: EventCategory
   description: string
-  date: string           // 'YYYY-MM-DD'
-  start_time: string     // 'HH:MM'
-  end_time?: string
-  location: string
+  date: string | null          // 'YYYY-MM-DD' (draft는 null 가능)
+  start_time: string | null    // 'HH:MM' (draft는 null 가능)
+  end_time: string | null
+  location: string | null      // draft는 null 가능
   host: string
-  apply_url?: string
-  poster_url?: string
+  apply_url: string | null
+  poster_url: string | null
   tags: string[]
-  target?: string
-  notes?: string
+  target: string | null
+  notes: string | null
   status: EventStatus
-  created_by?: string
+  created_by: string | null
+  // 크롤링 출처 추적 (draft 검수용)
+  source: string | null
+  source_url: string | null
+  source_article_no: number | null
   created_at: string
   updated_at: string
 }

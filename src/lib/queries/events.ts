@@ -19,6 +19,9 @@ export async function getEvents(filters: EventFilters = {}): Promise<Event[]> {
   }
   if (filters.status && filters.status !== '전체') {
     query = query.eq('status', filters.status)
+  } else {
+    // 일반 목록에서는 검수 대기 중인 draft 행사를 항상 제외
+    query = query.neq('status', 'draft')
   }
   if (filters.date) {
     query = query.eq('date', filters.date)
@@ -54,4 +57,17 @@ export async function getEvent(id: string): Promise<Event | null> {
 export async function getTodayEvents(): Promise<Event[]> {
   const today = new Date().toISOString().split('T')[0]
   return getEvents({ date: today })
+}
+
+// ── 검수 대기 중인 draft 행사 조회 (관리자용) ──
+export async function getDraftEvents(): Promise<Event[]> {
+  const supabase = await createServerSupabase()
+  const { data, error } = await supabase
+    .from('events')
+    .select('*')
+    .eq('status', 'draft')
+    .order('created_at', { ascending: false })
+
+  if (error) throw new Error(error.message)
+  return data ?? []
 }
